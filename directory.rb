@@ -27,11 +27,12 @@ def print_header
 end
 
 # captures which letter the user wants to search by
-def print_with_letter_header
+def get_char
   puts "What letter would you like to search for pupils by?"
-  letter = gets.chomp.upcase
-  puts "The Students of Rhubarb Academy with names beginning with #{letter}"
+  first_letter = gets.chomp.upcase
+  puts "The Students of Rhubarb Academy with names beginning with #{first_letter}"
   puts '-' * 15
+  first_letter
 end
 
 # prints all registered student with index position
@@ -54,8 +55,8 @@ end
 
 # Returns pupils only if they meet the condition in the block, which is the first letter of their name.
 def print_with_letter(students, letter)
-  students.each_with_index do |student, idx|
-    puts "#{idx+1}. #{student[:name]} (#{student[:cohort]} cohort)" if student[:name].start_with?(letter)
+  students.each do |student|
+    puts "#{student[:name]} (#{student[:cohort]} cohort)" if student[:name].start_with?(letter)
   end
 end
 
@@ -65,12 +66,10 @@ def print_footer(students)
 end
 
 # method calls
-first_letter = "R"
 students = input_students
 print_header
 print(students)
 print_header
 print_while(students)
-print_with_letter_header
-print_with_letter(students, first_letter)
+print_with_letter(students, get_char)
 print_footer(students)
