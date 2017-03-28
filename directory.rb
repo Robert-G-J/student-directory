@@ -84,6 +84,15 @@ def print_char(students, char)
 
 end
 
+def print_by_cohort(students)
+  cohorts = students.map {|student| student[:cohort]}.uniq
+  cohorts.each do |month|
+    students.each do |student|
+      puts "#{student[:name]} (#{student[:cohort]} cohort)" if student[:cohort] == month
+    end
+  end
+end
+
 # prints total num of students on roll
 def print_footer(students)
   puts "Overall, we have #{students.count} great students"
@@ -97,4 +106,5 @@ print_header
 #print_while(students)
 #print_with_letter(students, get_letter)
 #print_char(students, get_char)
+#print_by_cohort(students)
 print_footer(students)
