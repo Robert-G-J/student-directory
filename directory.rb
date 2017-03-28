@@ -1,28 +1,29 @@
 def input_students
-  puts "Please enter the names of the students"
-  puts "To finish, just hit return twice"
+  puts "ADD STUDENT INFORMATION:"
+  puts "Please enter the information for each student."
+  puts "To finish, ignore options and hit return. "
   # create an empty array
   students = []
   # get the first name
   name = gets.chomp
 
-  puts "Please enter the month"
+  puts "\nPlease enter the month"
   month = gets.chomp
   while !name.empty? do
 
         if !month.empty?
             students << {name: name, cohort: month}
         else
-              students << {name: name, cohort: :UNKNOWN}
+            students << {name: name, cohort: :UNKNOWN}
         end
 
         if students.count > 1
-          puts "Now we have #{students.count} students."
+          puts "\nWe now have #{students.count} students."
         else
-          puts "Now we have #{students.count} student."
+          puts "\nWe now have #{students.count} student."
         end
-
-      puts "Please enter another name or hit return twice"
+      puts "-" * $lineWidth
+      puts "\nPlease enter another name or hit return twice"
       name = gets.chomp
       puts "Enter another month"
       month = gets.chomp
@@ -34,9 +35,8 @@ end
 #end
 
 def print_header
-  line_width = 60
-  puts "\nThe Students of Rhubarb Academy".center(line_width)
-  puts "-" * line_width
+  puts "\nThe Students of Rhubarb Academy".center($lineWidth)
+  puts "-" * $lineWidth
 end
 
 # captures which letter the user wants to search by
@@ -44,7 +44,7 @@ def get_letter
   puts "What letter would you like to search for pupils by?"
   first_letter = gets.chomp.upcase
   puts "The Students of Rhubarb Academy with names beginning with #{first_letter}"
-  puts '-' * 15
+  puts '-' * $lineWidth
   first_letter
 end
 
@@ -53,7 +53,7 @@ def get_char
     puts "Search for names of characters less than:"
     char = gets.chomp.to_i
     puts "The Students of Rhubarb Academy with names shorter than #{char}"
-    puts '-' * 15
+    puts '-' * $lineWidth
     char
   end
 
@@ -82,6 +82,7 @@ def print_with_letter(students, letter)
   end
 end
 
+# Returns students with names under a user determined number of characters
 def print_char(students, char)
   students.each do |student|
     puts "#{student[:name]} (#{student[:cohort]} cohort)" if student[:name].length < char
@@ -100,8 +101,21 @@ end
 
 # prints total num of students on roll
 def print_footer(students)
-  puts "Overall, we have #{students.count} great students"
+  puts "-" * $lineWidth
+  if students.count > 1
+    puts "We have #{students.count} great students in total. "
+  elsif students.count == 1
+    puts "We have 1 great student. "
+  else
+    puts "We have zero students in the directory"
+  end
 end
+
+# Global constants
+$lineWidth = 60
+$columnWidth = 15
+# For automating user input at top
+info_keys = [:surname, :forename, :cohort, :DOB, :gender]
 
 # method calls
 students = input_students
