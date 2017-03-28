@@ -16,7 +16,7 @@ def input_students
               students << {name: name, cohort: :UNKNOWN}
         end
       puts "Now we have #{students.count} students"
-      puts "Please enter another name or hot return twice"
+      puts "Please enter another name or hit return twice"
 
       name = gets.chomp
       puts "Enter another month"
@@ -30,7 +30,7 @@ end
 
 def print_header
   line_width = 60
-  puts "The Students of Rhubarb Academy".center(line_width)
+  puts "\nThe Students of Rhubarb Academy".center(line_width)
   puts "-" * line_width
 end
 
@@ -53,7 +53,7 @@ def get_char
   end
 
 # prints all registered student with index position
-def print(students)
+def print_all(students)
   students.each_with_index do |student, idx|
     puts "#{idx+1}. #{student[:name]} (#{student[:cohort]} cohort)"
   end
@@ -84,8 +84,6 @@ def print_char(students, char)
 
 end
 
-
-
 # prints total num of students on roll
 def print_footer(students)
   puts "Overall, we have #{students.count} great students"
@@ -94,9 +92,9 @@ end
 # method calls
 students = input_students
 print_header
-print(students)
+print_all(students)
 print_header
-print_while(students)
-print_with_letter(students, get_letter)
-print_char(students, get_char)
+#print_while(students)
+#print_with_letter(students, get_letter)
+#print_char(students, get_char)
 print_footer(students)
