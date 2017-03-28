@@ -15,9 +15,14 @@ def input_students
         else
               students << {name: name, cohort: :UNKNOWN}
         end
-      puts "Now we have #{students.count} students"
-      puts "Please enter another name or hit return twice"
 
+        if students.count > 1
+          puts "Now we have #{students.count} students."
+        else
+          puts "Now we have #{students.count} student."
+        end
+
+      puts "Please enter another name or hit return twice"
       name = gets.chomp
       puts "Enter another month"
       month = gets.chomp
@@ -106,5 +111,5 @@ print_header
 #print_while(students)
 #print_with_letter(students, get_letter)
 #print_char(students, get_char)
-#print_by_cohort(students)
+print_by_cohort(students)
 print_footer(students)
