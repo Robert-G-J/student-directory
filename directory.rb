@@ -27,13 +27,22 @@ def print_header
 end
 
 # captures which letter the user wants to search by
-def get_char
+def get_letter
   puts "What letter would you like to search for pupils by?"
   first_letter = gets.chomp.upcase
   puts "The Students of Rhubarb Academy with names beginning with #{first_letter}"
   puts '-' * 15
   first_letter
 end
+
+# Obtain number of characters to search for
+def get_char
+    puts "Search for names of characters less than:"
+    char = gets.chomp.to_i
+    puts "The Students of Rhubarb Academy with names shorter than #{char}"
+    puts '-' * 15
+    char
+  end
 
 # prints all registered student with index position
 def print(students)
@@ -60,6 +69,15 @@ def print_with_letter(students, letter)
   end
 end
 
+def print_char(students, char)
+  students.each do |student|
+    puts "#{student[:name]} (#{student[:cohort]} cohort)" if student[:name].length < char
+  end
+
+end
+
+
+
 # prints total num of students on roll
 def print_footer(students)
   puts "Overall, we have #{students.count} great students"
@@ -71,5 +89,6 @@ print_header
 print(students)
 print_header
 print_while(students)
-print_with_letter(students, get_char)
+print_with_letter(students, get_letter)
+print_char(students, get_char)
 print_footer(students)
