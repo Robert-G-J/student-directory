@@ -1,4 +1,3 @@
-#captures student names and inputs to an array of hashes
 def input_students
   puts "Please enter the names of the students"
   puts "To finish, just hit return twice"
@@ -6,15 +5,23 @@ def input_students
   students = []
   # get the first name
   name = gets.chomp
-  # while the name is not empty, repeat this code
+
+  puts "Please enter the month"
+  month = gets.chomp
   while !name.empty? do
-    # add the student hash to the array
-    students << {name: name, cohort: :november}
-    puts "Now we have #{students.count} students"
-    # get another name from the user
-    name = gets.chomp
+
+        if !month.empty?
+            students << {name: name, cohort: month}
+        else
+              students << {name: name, cohort: :UNKNOWN}
+        end
+      puts "Now we have #{students.count} students"
+      puts "Please enter another name or hot return twice"
+
+      name = gets.chomp
+      puts "Enter another month"
+      month = gets.chomp
   end
-  # return the array of students
   students
 end
 
@@ -22,8 +29,9 @@ end
 #end
 
 def print_header
-  puts "The students of Rhubarb Academy"
-  puts "-" * 15
+  line_width = 60
+  puts "The Students of Rhubarb Academy".center(line_width)
+  puts "-" * line_width
 end
 
 # captures which letter the user wants to search by
@@ -56,7 +64,7 @@ def print_while(students)
   count = 0
     until count == students.count do
       students.each_with_index do |student, idx|
-        puts "#{idx+1}. #{student[:name]} (#{student[:cohort]} cohort)"
+        puts "#{idx+1}. #{student[:name]}" + "(#{student[:cohort]} cohort)".rjust(40)
         count += 1
       end
     end
