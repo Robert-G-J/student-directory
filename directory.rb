@@ -5,7 +5,7 @@ def input_students
   # create an empty array
   students = []
   # get the first name
-  name = gets.chomp
+  name = gets.strip
 
   puts "\nPlease enter the month"
   month = gets.chomp
