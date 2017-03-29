@@ -16,6 +16,8 @@ def process(selection)
     show_students
   when "3"
     save_students
+  when "4"
+    load_students
   when "9"
     exit
   else
@@ -27,6 +29,7 @@ def print_menu
   puts "1. Input new students"
   puts "2. Show the students"
   puts "3. Save the student-list to student.csv"
+  puts "4. Load student-list from students.csv"
   puts "9. Exit"
 end
 
@@ -144,7 +147,14 @@ def save_students
   file.close
 end
 
-
+def load_students
+  file = File.open("students.csv", "r")
+  file.readlines.each do |line|
+    name, cohort = line.chomp.split(',') # makes an array from each line, split at each comma. Before the comma goes
+    @students << {name: name, cohort: cohort.to_sym}
+  end
+  file.close
+end
 
 # prints total num of students on roll
 def print_footer
