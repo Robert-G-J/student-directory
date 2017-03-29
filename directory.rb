@@ -1,3 +1,33 @@
+def interactive_menu
+  students = []
+  loop do
+    # 1. show user a list of options
+    puts "1. Input new students"
+    puts "2. Show the students"
+    puts "9. Exit"
+    # 2. ask the user what to do
+    selection = gets.chomp
+    # 3. execute user request
+    case selection
+    when "1"
+      students = input_students
+    when "2"
+      print_header
+      print_all(students)
+      print_footer(students)
+    when "9"
+      exit
+    else
+      puts "I don't know what you meant, try again."
+    end
+  end
+end
+
+
+
+
+
+
 def input_students
   puts "ADD STUDENT INFORMATION:"
   puts "Please enter the information for each student."
@@ -5,7 +35,7 @@ def input_students
   # create an empty array
   students = []
   # get the first name
-  name = gets.strip
+  name = gets.strip #strip
 
   puts "\nPlease enter the month"
   month = gets.chomp
@@ -118,12 +148,13 @@ $columnWidth = 15
 info_keys = [:surname, :forename, :cohort, :DOB, :gender]
 
 # method calls
-students = input_students
-print_header
-print_all(students)
-print_header
+interactive_menu
+#students = input_students
+#print_header
+#print_all(students)
+#print_header
 #print_while(students)
 #print_with_letter(students, get_letter)
 #print_char(students, get_char)
-print_by_cohort(students)
-print_footer(students)
+#print_by_cohort(students)
+#print_footer(students)
