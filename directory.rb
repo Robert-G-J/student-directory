@@ -34,9 +34,11 @@ def process(selection)
 end
 
 def show_students
-  print_header
-  print_student_list
-  print_footer
+  begin
+    print_header
+    print_student_list
+  end unless !@students.nil?
+    print_footer
 end
 
 def input_students
@@ -59,7 +61,7 @@ def input_students
         else
           puts "\nWe now have #{@students.count} student."
         end
-      puts "-" * $lineWidth
+      puts "-" * @lineWidth
       puts "\nPlease enter another name or hit return twice"
       name = STDIN.gets.chomp
       puts "Enter another month"
@@ -72,8 +74,8 @@ def populate_student_info_array(name, month)
 end
 
 def print_header
-  puts "\nThe Students of Rhubarb Academy".center($lineWidth)
-  puts "-" * $lineWidth
+  puts "\nThe Students of Rhubarb Academy".center(@lineWidth)
+  puts "-" * @lineWidth
 end
 
 # captures which letter the user wants to search by
@@ -81,7 +83,7 @@ def get_letter
   puts "What letter would you like to search for pupils by?"
   first_letter = STDIN.gets.chomp.upcase
   puts "The Students of Rhubarb Academy with names beginning with #{first_letter}"
-  puts '-' * $lineWidth
+  puts '-' * @lineWidth
   first_letter
 end
 
@@ -96,7 +98,7 @@ def get_char
 
 # prints all registered student with index position
 def print_student_list
-  @students.each_with_index do |student, idx|
+    @students.each_with_index do |student, idx|
     puts "#{idx+1}. #{student[:name]} (#{student[:cohort]} cohort)"
   end
 end
@@ -172,7 +174,7 @@ end
 
 # prints total num of students on roll
 def print_footer
-  puts "-" * $lineWidth
+  puts "-" * @lineWidth
   if @students.count > 1
     puts "We have #{@students.count} great students in total. "
   elsif @students.count == 1
@@ -180,13 +182,14 @@ def print_footer
   else
     puts "We have zero students in the directory"
   end
+  puts "-" * @lineWidth
 end
 
 # Global constants
-$lineWidth = 60
-$columnWidth = 15
+@lineWidth = 60
+@columnWidth = 15
 # For automating user input at top
-info_keys = [:surname, :forename, :cohort, :DOB, :gender]
+@info_keys = [:surname, :forename, :cohort, :DOB, :gender]
 
 # method calls
 try_load_students
