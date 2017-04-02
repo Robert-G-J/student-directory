@@ -1,3 +1,8 @@
+#puts source_code = <<'HEREDOC'
+# This makes this process a 'quine'- a program that prints its own source count_students
+
+
+#filename = ARGV
 @students = [] # an empty array accessible to all methods
 
 def print_menu
@@ -5,10 +10,14 @@ def print_menu
   puts "2. Show the students"
   puts "3. Save the student-list to student.csv"
   puts "4. Load student-list from students.csv"
+  puts "5. Search for students by the first letter of their name"
+  puts "6. Search for names by length"
+  puts "7. Print students by cohort"
   puts "9. Exit"
 end
 
 def interactive_menu
+  #load_as_default
   #students = []
   loop do
     print_menu
@@ -18,89 +27,95 @@ end
 
 def process(selection)
   case selection
-  when "1"
-    input_students
-  when "2"
-    show_students
-  when "3"
-    save_students
-  when "4"
-    load_students
-  when "9"
-    exit
+  when "1"; input_students
+  when "2"; show_students
+  when "3"; save_students; feedback("Save")
+  when "4"; load_students; feedback("Load")
+  when "5"; print_with_letter(get_letter)
+  when "6"; print_char(get_char)
+  when "7"; print_by_cohort
+  when "9"; exit
   else
     puts "I don't know what you meant, try again."
   end
 end
 
+def feedback(action)
+  puts "#{action} completed successfully"
+end
+
 def show_students
-  begin
+  unless @students.empty?
     print_header
     print_student_list
-  end unless !@students.nil?
+  end
     print_footer
 end
 
 def input_students
   puts "Please enter the information for each student."
   puts "To finish, ignore options and hit return. "
-  # get the first name
-  name = STDIN.gets.strip #strip
+    name = STDIN.gets.strip #strip
   puts "Please enter the month"
-  month = STDIN.gets.chomp
+    month = STDIN.gets.chomp
+  #get_user_input
   while !name.empty? do
-
-        if !month.empty?
-            populate_student_info_array(name, month)
-        else
-            populate_student_info_array(name, :unknown)
-        end
-
-        if @students.count > 1
-          puts "\nWe now have #{@students.count} students."
-        else
-          puts "\nWe now have #{@students.count} student."
-        end
-      puts "-" * @lineWidth
-      puts "\nPlease enter another name or hit return twice"
-      name = STDIN.gets.chomp
-      puts "Enter another month"
-      month = STDIN.gets.chomp
+        !month.empty? ? populate_student_info_array(name, month) : populate_student_info_array(name, :unknown)
+        count_students
+        draw_separator
+        puts "\nPlease enter another name or hit return twice"
+        name = STDIN.gets.chomp
+        puts "Enter another month"
+        month = STDIN.gets.chomp
   end
+end
+
+#def month_valid?
+#end
+
+# divides text
+def draw_separator
+  puts "-" * @lineWidth
+end
+
+# counts the number of students on roll
+def count_students
+  @students.count > 1 ? "\nWe now have #{@students.count} students." : "\nWe now have #{@students.count} student."
 end
 
 def populate_student_info_array(name, month)
   @students << {name: name, cohort: month.to_sym}
 end
 
+
 def print_header
   puts "\nThe Students of Rhubarb Academy".center(@lineWidth)
-  puts "-" * @lineWidth
+  draw_separator
 end
 
 # captures which letter the user wants to search by
 def get_letter
   puts "What letter would you like to search for pupils by?"
-  first_letter = STDIN.gets.chomp.upcase
+    first_letter = STDIN.gets.chomp.upcase
   puts "The Students of Rhubarb Academy with names beginning with #{first_letter}"
-  puts '-' * @lineWidth
+  draw_separator
   first_letter
 end
 
 # Obtain number of characters to search for
 def get_char
     puts "Search for names of characters less than:"
-    char = STDIN.gets.chomp.to_i
+      char = STDIN.gets.chomp.to_i
     puts "The Students of Rhubarb Academy with names shorter than #{char}"
-    puts '-' * $lineWidth
-    char
+      draw_separator
+    return char
   end
 
-# prints all registered student with index position
+# prints all registered students with index position
 def print_student_list
     @students.each_with_index do |student, idx|
-    puts "#{idx+1}. #{student[:name]} (#{student[:cohort]} cohort)"
-  end
+      puts "#{idx+1}. #{student[:name]} (#{student[:cohort]} cohort)"
+    end
 end
 
 # prints all students using a while loop
@@ -138,6 +153,19 @@ def print_by_cohort
   end
 end
 
+# prints total num of students on roll
+def print_footer
+  puts "-" * @lineWidth
+  if @students.count > 1
+    puts "We have #{@students.count} great students in total. "
+  elsif @students.count == 1
+    puts "We have 1 great student. "
+  else
+    puts "We have zero students in the directory"
+  end
+  draw_separator
+end
+
 def save_students
   # open the file for writing
   file = File.open("students.csv", "w")
@@ -150,9 +178,10 @@ def save_students
   file.close
 end
 
+
+
 def try_load_students
-  filename = ARGV.first # first argument from the commandline
-  return if filename.nil? # get out of method if not given
+  ARGV.first.nil? ? filename = "students.csv" : filename = ARGV.first
   if File.exists?(filename) # if it exists
     load_students(filename)
     puts "Loaded #{@students.count} from file: #{filename}"
@@ -172,24 +201,21 @@ def load_students(filename = "students.csv")
   file.close
 end
 
-# prints total num of students on roll
-def print_footer
-  puts "-" * @lineWidth
-  if @students.count > 1
-    puts "We have #{@students.count} great students in total. "
-  elsif @students.count == 1
-    puts "We have 1 great student. "
-  else
-    puts "We have zero students in the directory"
-  end
-  puts "-" * @lineWidth
+def load_as_default
+  #checks if filename given as commandline argument
+  filename =  ARGV.first
+  load_students if filename.empty? || filename.nil?
+  # if no filename, uses load_students with students csv
 end
 
+
+
 # Global constants
-@lineWidth = 60
+@lineWidth = 110
 @columnWidth = 15
 # For automating user input at top
 @info_keys = [:surname, :forename, :cohort, :DOB, :gender]
+@valid_months = [:Jan, :Feb, :Mar, :Apr, :Jun, :Jul, :Aug, :Sep, :Oct, :Nov, :Dec]
 
 # method calls
 try_load_students
@@ -203,3 +229,5 @@ interactive_menu
 #print_char(@students, get_char)
 #print_by_cohort(@students)
 #print_footer(@students)
+
+#HEREDOC
