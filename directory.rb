@@ -4,6 +4,7 @@
 #************************** Global constants ***********************************#
 @students = [] # an empty array accessible to all methods
 @loadfile = ""
+@defaultfile = "students.csv"
 # Formatting
 @lineWidth = 110
 @columnWidth = 15
@@ -38,7 +39,9 @@ def process(selection)
   when "1"; input_students
   when "2"; show_students
   when "3"; try_save_students(check_file_exists); feedback("Save")
-  when "4"; load_students(ask_for_filename); feedback("Load")
+  when "4"
+    try_load_students_menu(check_file_exists)
+    feedback("Load")
   when "5"; print_with_letter(get_letter)
   when "6"; print_char(get_char)
   when "7"; draw_separator; print_by_cohort; draw_separator
@@ -49,7 +52,7 @@ def process(selection)
 end
 
 def feedback(action)
-  puts "#{action} completed successfully"
+  puts "#{action} action completed"
 end
 
 #def month_valid?
@@ -206,11 +209,24 @@ def save_students(filename = @loadfile)
   file.close
 end
 
-def try_load_students
-  ARGV.first.nil? ? filename = "students.csv" : filename = ARGV.first
+def try_load_students_startup
+  ARGV.first.nil? ? filename = @defaultfile : filename = ARGV.first
   if File.exists?(filename) # if it exists
     @loadfile = filename
-    load_students(filename)
+    load_students(@loadfile)
+    puts "Loaded #{@students.count} from file: #{filename}"
+  else # if it didn't exist
+    puts "Sorry, #{filename} doesn't exist."
+    exit #quits program
+  end
+end
+
+# Will not load file if no filename is provided
+def try_load_students_menu (filename)
+  return if filename.nil?
+  if File.exists?(filename)
+    @loadfile = filename
+    load_students(@loadfile)
     puts "Loaded #{@students.count} from file: #{filename}"
   else # if it didn't exist
     puts "Sorry, #{filename} doesn't exist."
@@ -219,7 +235,7 @@ def try_load_students
 end
 
 
-def load_students(filename = "students.csv")
+def load_students(filename = @defaultfile)
   file = File.open(filename, "r")
   file.readlines.each do |line|
     name, cohort = line.chomp.split(',') # makes an array from each line, split at each comma. Before the comma goes
@@ -235,18 +251,13 @@ def ask_for_filename(filename)
 end
 
 def check_file_exists
-  puts "Please enter the student directory file, or press enter for default."
+  puts "Please enter the student-directory file, or press enter for default."
   filename = STDIN.gets.chomp
-  if File.exists?(filename)
-    puts "Loaded #{@students.count} from file: #{filename}"
-    return filename
-  else
-    return
-  end
+  File.exists?(filename) ? (return filename) : return
 end
 
 #************************** Method Calls ***********************************#
-try_load_students
+try_load_students_startup
 interactive_menu
 
 
