@@ -1,10 +1,18 @@
 #puts source_code = <<'HEREDOC'
 # This makes this process a 'quine'- a program that prints its own source count_students
 
-
-#filename = ARGV
+#************************** Global constants ***********************************#
 @students = [] # an empty array accessible to all methods
+@defaultfile = "students.csv"
+# Formatting
+@lineWidth = 110
+@columnWidth = 15
+# For automating user input at top
+@info_keys = [:surname, :forename, :cohort, :DOB, :gender]
+@valid_months = [:Jan, :Feb, :Mar, :Apr, :Jun, :Jul, :Aug, :Sep, :Oct, :Nov, :Dec]
 
+
+#************************** Menus and  ***********************************#
 def print_menu
   puts "1. Input new students"
   puts "2. Show the students"
@@ -13,7 +21,7 @@ def print_menu
   puts "5. Search for students by the first letter of their name"
   puts "6. Search for names by length"
   puts "7. Print students by cohort"
-  puts "9. Exit"
+  puts "8. Exit"
 end
 
 def interactive_menu
@@ -29,12 +37,12 @@ def process(selection)
   case selection
   when "1"; input_students
   when "2"; show_students
-  when "3"; save_students; feedback("Save")
-  when "4"; load_students; feedback("Load")
+  when "3"; save_students(ask_for_filename); feedback("Save")
+  when "4"; load_students(ask_for_filename); feedback("Load")
   when "5"; print_with_letter(get_letter)
   when "6"; print_char(get_char)
-  when "7"; print_by_cohort
-  when "9"; exit
+  when "7"; draw_separator; print_by_cohort; draw_separator
+  when "8"; exit
   else
     puts "I don't know what you meant, try again."
   end
@@ -44,14 +52,24 @@ def feedback(action)
   puts "#{action} completed successfully"
 end
 
-def show_students
-  unless @students.empty?
-    print_header
-    print_student_list
-  end
-    print_footer
+#def month_valid?
+#end
+#************************* Formatting *************************************#
+# divides text
+def draw_separator
+  puts "-" * @lineWidth
 end
 
+#************************* Utilising Data **********************************#
+
+
+def populate_student_info_array(name, month)
+  @students << {name: name, cohort: month.to_sym}
+end
+
+
+#************************* Data Capture ************************************#
+# captures which letter the user wants to search by
 def input_students
   puts "Please enter the information for each student."
   puts "To finish, ignore options and hit return. "
@@ -70,30 +88,6 @@ def input_students
   end
 end
 
-#def month_valid?
-#end
-
-# divides text
-def draw_separator
-  puts "-" * @lineWidth
-end
-
-# counts the number of students on roll
-def count_students
-  @students.count > 1 ? "\nWe now have #{@students.count} students." : "\nWe now have #{@students.count} student."
-end
-
-def populate_student_info_array(name, month)
-  @students << {name: name, cohort: month.to_sym}
-end
-
-
-def print_header
-  puts "\nThe Students of Rhubarb Academy".center(@lineWidth)
-  draw_separator
-end
-
-# captures which letter the user wants to search by
 def get_letter
   puts "What letter would you like to search for pupils by?"
     first_letter = STDIN.gets.chomp.upcase
@@ -111,7 +105,22 @@ def get_char
     return char
   end
 
+
+#************************** Print to STDOUT methods ************************#
 # prints all registered students with index position
+def print_header
+  puts "\nThe Students of Rhubarb Academy".center(@lineWidth)
+  draw_separator
+end
+
+def show_students
+  unless @students.empty?
+    print_header
+    print_student_list
+  end
+    print_footer
+end
+
 def print_student_list
     @students.each_with_index do |student, idx|
       puts "#{idx+1}. #{student[:name]} (#{student[:cohort]} cohort)"
@@ -153,6 +162,11 @@ def print_by_cohort
   end
 end
 
+# counts the number of students on roll
+def count_students
+  @students.count > 1 ? "\nWe now have #{@students.count} students." : "\nWe now have #{@students.count} student."
+end
+
 # prints total num of students on roll
 def print_footer
   puts "-" * @lineWidth
@@ -166,9 +180,10 @@ def print_footer
   draw_separator
 end
 
-def save_students
+#***************************** File load & save methods *************************#
+def save_students(filename)
   # open the file for writing
-  file = File.open("students.csv", "w")
+  file = File.open(filename, "w")
   # iterate over the array of students
   @students.each do |student|
     student_data = [student[:name], student[:cohort]]
@@ -177,8 +192,6 @@ def save_students
   end
   file.close
 end
-
-
 
 def try_load_students
   ARGV.first.nil? ? filename = "students.csv" : filename = ARGV.first
@@ -201,33 +214,27 @@ def load_students(filename = "students.csv")
   file.close
 end
 
-def load_as_default
-  #checks if filename given as commandline argument
-  filename =  ARGV.first
-  load_students if filename.empty? || filename.nil?
-  # if no filename, uses load_students with students csv
+# asks user for file to load from interactive menu
+def ask_for_filename
+  puts "Please enter the student directory file you would like to load, or press enter to load the default."
+  filename = STDIN.gets.chomp
+  filename.empty? ? return : filename
 end
 
+def check_file_exists
+  filename = STDIN.gets.chomp
+  if File.exists?(filename)
+    load_students(filename)
+    puts "Loaded #{@students.count} from file: #{filename}"
+  else
+    puts "Sorry, that #{filename} doesn't exist"
+  end
+end
 
-
-# Global constants
-@lineWidth = 110
-@columnWidth = 15
-# For automating user input at top
-@info_keys = [:surname, :forename, :cohort, :DOB, :gender]
-@valid_months = [:Jan, :Feb, :Mar, :Apr, :Jun, :Jul, :Aug, :Sep, :Oct, :Nov, :Dec]
-
-# method calls
+#************************** Method Calls ***********************************#
 try_load_students
 interactive_menu
 
-#print_header
-#print_all(@students)
-#print_header
-#print_while(@students)
-#print_with_letter(@students, get_letter)
-#print_char(@students, get_char)
-#print_by_cohort(@students)
-#print_footer(@students)
+
 
 #HEREDOC
