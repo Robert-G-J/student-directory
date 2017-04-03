@@ -199,14 +199,14 @@ end
 
 def save_students(filename = @loadfile)
   # open the file for writing
-  file = File.open(filename, "w")
+  File.open(filename, "w") do |file|
   # iterate over the array of students
-  @students.each do |student|
-    student_data = [student[:name], student[:cohort]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
+    @students.each do |student|
+      student_data = [student[:name], student[:cohort]]
+      csv_line = student_data.join(",")
+      file.puts csv_line
+    end
   end
-  file.close
 end
 
 def try_load_students_startup
@@ -236,12 +236,12 @@ end
 
 
 def load_students(filename = @defaultfile)
-  file = File.open(filename, "r")
+  File.open(filename, "r") do |file|
   file.readlines.each do |line|
     name, cohort = line.chomp.split(',') # makes an array from each line, split at each comma. Before the comma goes
     populate_student_info_array(name, cohort.to_sym)
     end
-  file.close
+  end
 end
 
 # asks user for file to load from interactive menu
