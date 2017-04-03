@@ -5,7 +5,7 @@ require 'CSV'
 
 
 #************************** Global constants ***********************************#
-@students = [] # an empty array accessible to all methods
+@students = []
 @loadfile = ""
 @defaultfile = "students.csv"
 # Formatting
@@ -16,7 +16,7 @@ require 'CSV'
 @valid_months = [:Jan, :Feb, :Mar, :Apr, :Jun, :Jul, :Aug, :Sep, :Oct, :Nov, :Dec]
 
 
-#************************** Menus and  ***********************************#
+#************************** Menus  ***********************************#
 def print_menu
   puts "1. Input new students"
   puts "2. Show the students"
@@ -29,8 +29,6 @@ def print_menu
 end
 
 def interactive_menu
-  #load_as_default
-  #students = []
   loop do
     print_menu
     process(STDIN.gets.chomp)
@@ -60,16 +58,14 @@ def feedback(action)
   puts "#{action} action completed"
 end
 
-#def month_valid?
-#end
 #************************* Formatting *************************************#
-# divides text
+
 def draw_separator
   puts "-" * @lineWidth
 end
 
-#************************* Utilising Data **********************************#
 
+#************************* Utilising Data **********************************#
 
 def populate_student_info_array(name, month)
   @students << {name: name, cohort: month.to_sym}
@@ -77,7 +73,7 @@ end
 
 
 #************************* Data Capture ************************************#
-# captures which letter the user wants to search by
+
 def input_students
   puts "Please enter the information for each student."
   puts "To finish, ignore options and hit return. "
@@ -95,7 +91,7 @@ def input_students
         month = STDIN.gets.chomp
   end
 end
-
+# obtain letter to search by
 def get_letter
   puts "What letter would you like to search for pupils by?"
     first_letter = STDIN.gets.chomp.upcase
@@ -115,7 +111,7 @@ def get_char
 
 
 #************************** Print to STDOUT methods ************************#
-# prints all registered students with index position
+
 def print_header
   puts "\nThe Students of Rhubarb Academy".center(@lineWidth)
   draw_separator
@@ -135,7 +131,7 @@ def print_student_list
     end
 end
 
-# prints all students using a while loop
+# prints all students using a while/until loop
 def print_while
   count = 0
     until count == @students.count do
@@ -146,7 +142,7 @@ def print_while
     end
 end
 
-# Returns pupils only if they meet the condition in the block, which is the first letter of their name.
+# Returns pupils names beginning with a given letter
 def print_with_letter(letter)
   @students.each do |student|
     puts "#{student[:name]} (#{student[:cohort]} cohort)" if student[:name].start_with?(letter)
@@ -161,6 +157,7 @@ def print_char(char)
 
 end
 
+# prints by cohort
 def print_by_cohort
   cohorts = @students.map {|student| student[:cohort]}.uniq
   cohorts.each do |month|
@@ -188,7 +185,9 @@ def print_footer
   draw_separator
 end
 
+
 #***************************** File load & save methods *************************#
+# Checks existance of a given file
 def try_save_students(filename)
   filename.nil? ? filename = @loadfile : filename
   if File.exists? (filename)
@@ -199,7 +198,7 @@ def try_save_students(filename)
     return
   end
 end
-
+# saves array data to csv
 def save_students(filename = @loadfile)
   CSV.open(filename, "w") do |csv|
   # iterate over the array of students
@@ -222,20 +221,20 @@ def save_students(filename = @loadfile)
   end
 end
 =end
-
+# attempts to load data from csv at commandline
 def try_load_students_startup
   ARGV.first.nil? ? filename = @defaultfile : filename = ARGV.first
-  if File.exists?(filename) # if it exists
+  if File.exists?(filename)
     @loadfile = filename
     load_students(@loadfile)
     puts "Loaded #{@students.count} from file: #{filename}"
-  else # if it didn't exist
+  else
     puts "Sorry, #{filename} doesn't exist."
-    exit #quits program
+    exit
   end
 end
 
-# Will not load file if no filename is provided
+# Loads student lists from menu option (unless given a return)
 def try_load_students_menu (filename)
   return if filename.nil?
   if File.exists?(filename)
@@ -259,14 +258,13 @@ def load_students(filename = @defaultfile)
 end
 =end
 
+# reads each line of a csv into students array
 def load_students(filename = @defaultfile)
   CSV.foreach(filename, "r") do |row|
     name, cohort = row
     populate_student_info_array(name, cohort.to_sym)
     end
 end
-
-
 
 # asks user for file to load from interactive menu
 def ask_for_filename(filename)
