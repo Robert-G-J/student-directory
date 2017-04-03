@@ -1,5 +1,8 @@
 #puts source_code = <<'HEREDOC'
 # This makes this process a 'quine'- a program that prints its own source count_students
+#************************** Required modules ***********************************#
+require 'CSV'
+
 
 #************************** Global constants ***********************************#
 @students = [] # an empty array accessible to all methods
@@ -234,7 +237,7 @@ def try_load_students_menu (filename)
   end
 end
 
-
+=begin
 def load_students(filename = @defaultfile)
   File.open(filename, "r") do |file|
   file.readlines.each do |line|
@@ -243,6 +246,16 @@ def load_students(filename = @defaultfile)
     end
   end
 end
+=end
+
+def load_students(filename = @defaultfile)
+  CSV.foreach(filename, "r") do |row|
+    name, cohort = row 
+    populate_student_info_array(name, cohort.to_sym)
+    end
+end
+
+
 
 # asks user for file to load from interactive menu
 def ask_for_filename(filename)
