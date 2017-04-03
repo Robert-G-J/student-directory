@@ -3,7 +3,6 @@
 #************************** Required modules ***********************************#
 require 'CSV'
 
-
 #************************** Global constants ***********************************#
 @students = []
 @loadfile = ""
@@ -16,7 +15,7 @@ require 'CSV'
 @valid_months = [:Jan, :Feb, :Mar, :Apr, :Jun, :Jul, :Aug, :Sep, :Oct, :Nov, :Dec]
 
 
-#************************** Menus  ***********************************#
+#****************************** Menus ******************************************#
 def print_menu
   puts "1. Input new students"
   puts "2. Show the students"
@@ -58,21 +57,21 @@ def feedback(action)
   puts "#{action} action completed"
 end
 
-#************************* Formatting *************************************#
+#***************************** Formatting *************************************#
 
 def draw_separator
   puts "-" * @lineWidth
 end
 
 
-#************************* Utilising Data **********************************#
+#**************************** Utilising Data **********************************#
 
 def populate_student_info_array(name, month)
   @students << {name: name, cohort: month.to_sym}
 end
 
 
-#************************* Data Capture ************************************#
+#**************************** Data Capture ************************************#
 
 def input_students
   puts "Please enter the information for each student."
@@ -110,7 +109,7 @@ def get_char
   end
 
 
-#************************** Print to STDOUT methods ************************#
+#************************** Print to STDOUT methods ****************************#
 
 def print_header
   puts "\nThe Students of Rhubarb Academy".center(@lineWidth)
@@ -278,7 +277,7 @@ def check_file_exists
   File.exists?(filename) ? (return filename) : return
 end
 
-#************************** Method Calls ***********************************#
+#****************************** Method Calls ***********************************#
 try_load_students_startup
 interactive_menu
 
