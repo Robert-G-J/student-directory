@@ -41,7 +41,9 @@ def process(selection)
   case selection
   when "1"; input_students
   when "2"; show_students
-  when "3"; try_save_students(check_file_exists); feedback("Save")
+  when "3"
+    try_save_students(check_file_exists)
+    feedback("Save")
   when "4"
     try_load_students_menu(check_file_exists)
     feedback("Load")
@@ -188,7 +190,7 @@ end
 
 #***************************** File load & save methods *************************#
 def try_save_students(filename)
-  filename.nil? ? filename = @loadfile : filename #breaks save : # progresses to save
+  filename.nil? ? filename = @loadfile : filename
   if File.exists? (filename)
     save_students(filename)
     puts "Saved to file: #{filename}"
@@ -198,8 +200,16 @@ def try_save_students(filename)
   end
 end
 
+def save_students(filename = @loadfile)
+  CSV.open(filename, "w") do |csv|
+  # iterate over the array of students
+    @students.each do |student|
+      csv << [student[:name], student[:cohort]]
+    end
+  end
+end
 
-
+=begin
 def save_students(filename = @loadfile)
   # open the file for writing
   File.open(filename, "w") do |file|
@@ -211,6 +221,7 @@ def save_students(filename = @loadfile)
     end
   end
 end
+=end
 
 def try_load_students_startup
   ARGV.first.nil? ? filename = @defaultfile : filename = ARGV.first
@@ -250,7 +261,7 @@ end
 
 def load_students(filename = @defaultfile)
   CSV.foreach(filename, "r") do |row|
-    name, cohort = row 
+    name, cohort = row
     populate_student_info_array(name, cohort.to_sym)
     end
 end
