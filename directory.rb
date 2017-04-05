@@ -19,8 +19,8 @@ require 'CSV'
 def print_menu
   puts "1. Input new students"
   puts "2. Show the students"
-  puts "3. Save the student-list to student.csv"
-  puts "4. Load student-list from students.csv"
+  puts "3. Save the student-list to .csv"
+  puts "4. Load student-list from .csv"
   puts "5. Search for students by the first letter of their name"
   puts "6. Search for names by length"
   puts "7. Print students by cohort"
@@ -126,7 +126,7 @@ end
 
 def print_student_list
     @students.each_with_index do |student, idx|
-      puts "#{idx+1}. #{student[:name]} (#{student[:cohort]} cohort)"
+      puts "#{idx+1}. #{student[:name]}".ljust(@columnWidth) + "(#{student[:cohort]} cohort)".rjust(@columnWidth*2)
     end
 end
 
