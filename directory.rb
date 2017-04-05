@@ -38,15 +38,11 @@ def process(selection)
   case selection
   when "1"; input_students
   when "2"; show_students
-  when "3"
-    try_save_students(check_file_exists)
-    feedback("Save")
-  when "4"
-    try_load_students_menu(check_file_exists)
-    feedback("Load")
+  when "3"; save_menu
+  when "4"; load_menu
   when "5"; print_with_letter(get_letter)
   when "6"; print_char(get_char)
-  when "7"; draw_separator; print_by_cohort; draw_separator
+  when "7"; cohort_menu
   when "8"; exit
   else
     puts "I don't know what you meant, try again."
@@ -70,7 +66,9 @@ def populate_student_info_array(name, month)
   @students << {name: name, cohort: month.to_sym}
 end
 
-
+def empty_students_info_array
+  @students.clear
+end
 #**************************** Data Capture ************************************#
 
 def input_students
@@ -123,6 +121,23 @@ def show_students
   end
     print_footer
 end
+
+def save_menu
+  try_save_students(check_file_exists)
+  feedback("Save")
+end
+
+def load_menu
+  try_load_students_menu(check_file_exists)
+  feedback("Load")
+end
+
+def cohort_menu
+  draw_separator
+  print_by_cohort
+  draw_separator
+end
+
 
 def print_student_list
     @students.each_with_index do |student, idx|
@@ -259,6 +274,7 @@ end
 
 # reads each line of a csv into students array
 def load_students(filename = @defaultfile)
+  empty_students_info_array
   CSV.foreach(filename, "r") do |row|
     name, cohort = row
     populate_student_info_array(name, cohort.to_sym)
